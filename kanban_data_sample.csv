@@ -1,0 +1,31 @@
+﻿record_id,request_date,title,requestor,priority,estimated_development_hours,current_stage
+00001,7/13/2021,Request 1,Requestor 8,Low,40,Completed
+00002,7/21/2021,Request 2,Requestor 10,High,8,Reviewed
+00003,9/7/2021,Request 3,Requestor 4,High,40,Completed
+00004,7/11/2021,Request 4,Requestor 9,Low,20,In Progress
+00005,9/7/2021,Request 5,Requestor 6,Low,8,Completed
+00006,8/20/2021,Request 6,Requestor 9,Low,4,Completed
+00007,8/31/2021,Request 7,Requestor 7,Medium,4,Submitted
+00008,9/22/2021,Request 8,Requestor 7,High,20,Reviewed
+00009,9/4/2021,Request 9,Requestor 2,High,240,Completed
+00010,7/26/2021,Request 10,Requestor 4,High,4,In Progress
+00011,8/3/2021,Request 11,Requestor 6,High,80,Completed
+00012,9/22/2021,Request 12,Requestor 3,High,8,Reviewed
+00013,8/27/2021,Request 13,Requestor 7,High,4,Reviewed
+00014,8/27/2021,Request 14,Requestor 2,Low,8,Submitted
+00015,8/4/2021,Request 15,Requestor 9,High,20,Completed
+00016,9/23/2021,Request 16,Requestor 2,High,20,Reviewed
+00017,8/30/2021,Request 17,Requestor 7,High,40,Reviewed
+00018,10/5/2021,Request 18,Requestor 5,Medium,240,Completed
+00019,8/18/2021,Request 19,Requestor 5,Low,4,Submitted
+00020,9/16/2021,Request 20,Requestor 2,Low,4,Completed
+00021,8/13/2021,Request 21,Requestor 2,Medium,40,Submitted
+00022,7/21/2021,Request 22,Requestor 7,High,40,Reviewed
+00023,7/15/2021,Request 23,Requestor 2,High,160,Completed
+00024,9/3/2021,Request 24,Requestor 8,Medium,20,Reviewed
+00025,7/29/2021,Request 25,Requestor 6,Medium,4,Completed
+00026,7/11/2021,Request 26,Requestor 5,Medium,240,Submitted
+00027,9/20/2021,Request 27,Requestor 1,Medium,160,Completed
+00028,9/21/2021,Request 28,Requestor 10,Medium,8,Completed
+00029,7/30/2021,Request 29,Requestor 3,High,4,Completed
+00030,8/5/2021,Request 30,Requestor 1,Low,240,Rejected

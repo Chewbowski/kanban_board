@@ -1,0 +1,640 @@
+---
+title: "Data Request Kanban Board"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+```{r Setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+set.seed(42)
+```
+
+
+```{r Load_Packages}
+# Install Required Packages---------------------------------------------------
+
+# This code snippet is modified from a post at
+# (https://stackoverflow.com/questions/9341635/check-for-installed-packages-before-running-install-packages)
+
+
+# Required packages
+mypackages <- c(
+  "tidyverse",
+  "flexdashboard"
+)
+
+
+# Checks for and installs missing packages
+for (p in mypackages) {
+  if (!require(p, character.only = TRUE)) {
+    install.packages(p)
+    library(p, character.only = TRUE)
+  }
+}
+
+remove(mypackages)
+remove(p)
+```
+
+```{r Load_Data}
+
+
+
+
+kanban_raw_df <- read_csv('kanban_data_sample.csv') %>%
+  left_join(tibble(
+    priority  =
+      c('Low',
+        'Medium',
+        'High'),
+    clr = c('#01579B',
+            '#880E4F',
+            '#FFA000')
+  ))
+
+```
+
+```{r results="asis"}
+
+submitted_df <- 
+  kanban_raw_df %>% 
+  filter(current_stage == 'Submitted')
+
+
+
+item_list <- unique(submitted_df$record_id)
+
+
+
+plotfunc <- function() {
+  for (i in seq_along(item_list)) {
+    i_df <- filter(submitted_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+    value = paste0('#',
+                   i_df$record_id,
+                   ' - ',
+                   i_df$priority),
+    color = i_df$clr,
+    caption = paste0(
+      'Requestor: ',
+      i_df$requestor,
+      '<br>',
+      'Request Date: ',
+      i_df$request_date,
+      '<br>',
+      'Current Stage: ',
+      i_df$current_stage,
+      '<br>',
+      'Priority: ',
+      i_df$priority,
+      '<br>',
+      'Estimated Development Hours: ',
+      i_df$estimated_development_hours
+    )
+  )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+```
+
+
+
+
+Column
+----------------------
+
+
+### Awating Review
+
+```{r}
+
+valueBox(
+  value = paste0(NROW(unique(
+    submitted_df$record_id
+  )),
+  ' Awaiting Review'),
+  caption =
+    paste0(
+      NROW(unique(
+        filter(submitted_df, priority == 'Low')$record_id
+      )),
+      ' Low &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'Medium')$record_id
+      )),
+      ' Medium &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'High')$record_id
+      )),
+      ' High'
+    ),
+  color = I('#757575')
+)
+
+```
+
+
+
+```{r results="asis"}
+
+plotfunc()
+
+```
+
+
+
+
+
+
+
+
+```{r results="asis"}
+
+submitted_df <- 
+  kanban_raw_df %>% 
+  filter(current_stage == 'Reviewed')
+
+
+
+item_list <- unique(submitted_df$record_id)
+
+
+
+plotfunc <- function() {
+  for (i in seq_along(item_list)) {
+    i_df <- filter(submitted_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+    value = paste0('#',
+                   i_df$record_id,
+                   ' - ',
+                   i_df$priority),
+    color = i_df$clr,
+    caption = paste0(
+      'Requestor: ',
+      i_df$requestor,
+      '<br>',
+      'Request Date: ',
+      i_df$request_date,
+      '<br>',
+      'Current Stage: ',
+      i_df$current_stage,
+      '<br>',
+      'Priority: ',
+      i_df$priority,
+      '<br>',
+      'Estimated Development Hours: ',
+      i_df$estimated_development_hours
+    )
+  )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+```
+
+
+
+
+Column
+----------------------
+
+
+### Reviewed
+
+```{r}
+
+valueBox(
+  value = paste0(NROW(unique(
+    submitted_df$record_id
+  )),
+  ' Reviewed'),
+  caption =
+    paste0(
+      NROW(unique(
+        filter(submitted_df, priority == 'Low')$record_id
+      )),
+      ' Low &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'Medium')$record_id
+      )),
+      ' Medium &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'High')$record_id
+      )),
+      ' High'
+    ),
+  color = I('#81C784')
+)
+
+```
+
+
+
+```{r results="asis"}
+
+plotfunc()
+
+```
+
+
+
+
+
+
+
+
+
+```{r results="asis"}
+
+submitted_df <- 
+  kanban_raw_df %>% 
+  filter(current_stage == 'In Progress')
+
+
+
+item_list <- unique(submitted_df$record_id)
+
+
+
+plotfunc <- function() {
+  for (i in seq_along(item_list)) {
+    i_df <- filter(submitted_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+    value = paste0('#',
+                   i_df$record_id,
+                   ' - ',
+                   i_df$priority),
+    color = i_df$clr,
+    caption = paste0(
+      'Requestor: ',
+      i_df$requestor,
+      '<br>',
+      'Request Date: ',
+      i_df$request_date,
+      '<br>',
+      'Current Stage: ',
+      i_df$current_stage,
+      '<br>',
+      'Priority: ',
+      i_df$priority,
+      '<br>',
+      'Estimated Development Hours: ',
+      i_df$estimated_development_hours
+    )
+  )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+```
+
+
+
+
+Column
+----------------------
+
+
+### In Progress
+
+```{r}
+
+valueBox(
+  value = paste0(NROW(unique(
+    submitted_df$record_id
+  )),
+  ' In Progress'),
+  caption =
+    paste0(
+      NROW(unique(
+        filter(submitted_df, priority == 'Low')$record_id
+      )),
+      ' Low &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'Medium')$record_id
+      )),
+      ' Medium &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'High')$record_id
+      )),
+      ' High'
+    ),
+  
+  color = I('#43A047')
+)
+
+```
+
+
+
+```{r results="asis"}
+
+plotfunc()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r results="asis"}
+
+submitted_df <- 
+  kanban_raw_df %>% 
+  filter(current_stage == 'Completed')
+
+
+
+item_list <- unique(submitted_df$record_id)
+
+
+
+plotfunc <- function() {
+  for (i in seq_along(item_list)) {
+    i_df <- filter(submitted_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+    value = paste0('#',
+                   i_df$record_id,
+                   ' - ',
+                   i_df$priority),
+    color = i_df$clr,
+    caption = paste0(
+      'Requestor: ',
+      i_df$requestor,
+      '<br>',
+      'Request Date: ',
+      i_df$request_date,
+      '<br>',
+      'Current Stage: ',
+      i_df$current_stage,
+      '<br>',
+      'Priority: ',
+      i_df$priority,
+      '<br>',
+      'Estimated Development Hours: ',
+      i_df$estimated_development_hours
+    )
+  )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+```
+
+
+
+
+Column
+----------------------
+
+
+### Completed
+
+```{r}
+
+valueBox(
+  value = paste0(NROW(unique(
+    submitted_df$record_id
+  )),
+  ' Completed'),
+  caption =
+    paste0(
+      NROW(unique(
+        filter(submitted_df, priority == 'Low')$record_id
+      )),
+      ' Low &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'Medium')$record_id
+      )),
+      ' Medium &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'High')$record_id
+      )),
+      ' High'
+    ),
+  
+  color = I('#1B5E20')
+)
+
+```
+
+
+
+```{r results="asis"}
+
+plotfunc()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r results="asis"}
+
+submitted_df <- 
+  kanban_raw_df %>% 
+  filter(current_stage == 'Rejected')
+
+
+
+item_list <- unique(submitted_df$record_id)
+
+
+
+plotfunc <- function() {
+  for (i in seq_along(item_list)) {
+    i_df <- filter(submitted_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+    value = paste0('#',
+                   i_df$record_id,
+                   ' - ',
+                   i_df$priority),
+    color = i_df$clr,
+    caption = paste0(
+      'Requestor: ',
+      i_df$requestor,
+      '<br>',
+      'Request Date: ',
+      i_df$request_date,
+      '<br>',
+      'Current Stage: ',
+      i_df$current_stage,
+      '<br>',
+      'Priority: ',
+      i_df$priority,
+      '<br>',
+      'Estimated Development Hours: ',
+      i_df$estimated_development_hours
+    )
+  )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+```
+
+
+
+
+Column
+----------------------
+
+
+### Rejected
+
+```{r}
+
+valueBox(
+  value = paste0(NROW(unique(
+    submitted_df$record_id
+  )),
+  ' Rejected'),
+  caption =
+    paste0(
+      NROW(unique(
+        filter(submitted_df, priority == 'Low')$record_id
+      )),
+      ' Low &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'Medium')$record_id
+      )),
+      ' Medium &nbsp &nbsp | &nbsp &nbsp',
+      NROW(unique(
+        filter(submitted_df, priority == 'High')$record_id
+      )),
+      ' High'
+    ),
+  
+  color = I('#D32F2F')
+)
+
+```
+
+
+
+```{r results="asis"}
+
+plotfunc()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
