@@ -1,0 +1,322 @@
+---
+title: "Data Request Kanban Board"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r Developer_Notes, include=FALSE}
+
+# Author: Hugh Welch
+# Contact Info: linkedin.com/in/hughwelchdata
+# 
+# Description:
+# This is a rough first attempt at exploring the possibility of using looped
+# valueboxes to create a client-side interactive Kanban board for tracking
+# data requests and sharing their status with requester and leadership.
+# 
+# At this stage I'm not sure if this would be truly feasible or how well the 
+# concept would scale. Additionally, even though I've searched for this type 
+# of use case and found no similar ones, I can't be certain the idea is novel
+# or unique.
+
+```
+
+
+
+```{r Setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+set.seed(42)
+```
+
+
+```{r Load_Packages}
+# Install Required Packages---------------------------------------------------
+
+# This code snippet is modified from a post at
+# (https://stackoverflow.com/questions/9341635/check-for-installed-packages-before-running-install-packages)
+
+
+# Required packages
+mypackages <- c(
+  "tidyverse",
+  "flexdashboard"
+)
+
+
+# Checks for and installs missing packages
+for (p in mypackages) {
+  if (!require(p, character.only = TRUE)) {
+    install.packages(p)
+    library(p, character.only = TRUE)
+  }
+}
+
+remove(mypackages)
+remove(p)
+```
+
+```{r Load_Data}
+
+# currently using a csv file as the main data source
+# ideally there would be a database housing this information for 
+# real-time updates
+
+
+kanban_raw_df <- read_csv('kanban_data_sample.csv') %>%
+  left_join(tibble(
+    priority  =
+      c('Low',
+        'Medium',
+        'High'),
+    clr = c('#01579B',
+            '#880E4F',
+            '#FFA000')
+  ))
+
+```
+
+```{r Build_Functions}
+
+# This function filters the dataframe based on input stage and loops through
+# all unique records to create a valuebox for each
+
+loop_valuebox <- function(stage) {
+  stage_df <-
+    kanban_raw_df %>%
+    filter(current_stage == stage)
+  
+  
+  item_list <- unique(stage_df$record_id)
+  
+  
+  for (i in seq_along(item_list)) {
+    i_df <- filter(stage_df,
+                   record_id == item_list[i])
+    
+    
+    vbx <- valueBox(
+      value = paste0('#',
+                     i_df$record_id,
+                     ' - ',
+                     i_df$priority),
+      color = i_df$clr,
+      caption = paste0(
+        'Requestor: ',
+        i_df$requestor,
+        '<br>',
+        'Request Date: ',
+        i_df$request_date,
+        '<br>',
+        'Current Stage: ',
+        i_df$current_stage,
+        '<br>',
+        'Priority: ',
+        i_df$priority,
+        '<br>',
+        'Estimated Development Hours: ',
+        i_df$estimated_development_hours
+      )
+    )
+    
+    
+    cat("  \n###", i_df$title, "\n\n")
+    
+    
+    print(vbx)
+    
+    cat('  \n  \n')
+    
+  }
+}
+
+
+
+
+
+# this function creates a "header" valuebox with aggregate information 
+# based on stage, title, and color inputs
+
+header_vb_function <-
+  function(stage, title, color) {
+    stage_df <-
+      kanban_raw_df %>%
+      filter(current_stage == stage)
+    
+    valueBox(
+      value = paste0(NROW(unique(
+        stage_df$record_id
+      )),
+      ' ',
+      title),
+      caption =
+        paste0(
+          NROW(unique(
+            filter(stage_df, priority == 'Low')$record_id
+          )),
+          ' Low &nbsp &nbsp | &nbsp &nbsp',
+          NROW(unique(
+            filter(stage_df, priority == 'Medium')$record_id
+          )),
+          ' Medium &nbsp &nbsp | &nbsp &nbsp',
+          NROW(unique(
+            filter(stage_df, priority == 'High')$record_id
+          )),
+          ' High'
+        ),
+      color = I(color)
+    )
+  }
+
+```
+
+
+
+
+
+Column
+----------------------
+
+
+### Awaiting Review
+
+```{r First_Column_Header}
+
+header_vb_function('Submitted', 'Awaiting Review', '#757575')
+
+```
+
+
+
+```{r First_Column_Body, results="asis"}
+
+loop_valuebox('Submitted')
+
+```
+
+
+
+
+
+Column
+----------------------
+
+
+### Reviewed
+
+```{r Second_Column_Header}
+
+header_vb_function('Reviewed', 'Reviewed', '#81C784')
+
+
+```
+
+
+
+```{r Second_Column_Body, results="asis"}
+
+loop_valuebox('Reviewed')
+
+```
+
+
+
+
+
+Column
+----------------------
+
+
+### In Progress
+
+```{r Third_Column_Header}
+
+header_vb_function('In Progress', 'In Progress', '#43A047')
+
+
+```
+
+
+
+```{r Third_Column_Body, results="asis"}
+
+loop_valuebox('In Progress')
+
+```
+
+
+
+
+
+Column
+----------------------
+
+
+### Completed
+
+```{r Fourth_Column_Header}
+
+header_vb_function('Completed', 'Completed', '#1B5E20')
+
+
+```
+
+
+
+```{r Fourth_Column_Body, results="asis"}
+
+loop_valuebox('Completed')
+
+```
+
+
+
+
+
+Column
+----------------------
+
+
+### Rejected
+
+```{r Fifth_Column_Header}
+
+header_vb_function('Rejected', 'Rejected', '#D32F2F')
+
+
+```
+
+
+```{r Fifth_Column_Body, results="asis"}
+
+loop_valuebox('Rejected')
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
